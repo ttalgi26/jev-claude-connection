@@ -10,8 +10,8 @@ import sys
 
 import gradio as gr
 
-from jevqa.config import OUTPUT_DIR
-from jevqa.pipeline import Session, answer
+from claudeqa.config import OUTPUT_DIR
+from claudeqa.pipeline import Session, answer
 
 ACCEPT = [
     "image", ".pdf", ".csv", ".tsv", ".xlsx", ".xls", ".json", ".txt", ".md",
@@ -54,9 +54,9 @@ def new_chat():
     return [], None
 
 
-with gr.Blocks(title="Jev + Claude") as demo:
+with gr.Blocks(title="Claude QA") as demo:
     gr.Markdown(
-        "## Jev + Claude\n"
+        "## Claude QA\n"
         "질문 난이도에 따라 Haiku / Sonnet / Opus 중 하나를 자동으로 고릅니다. "
         "차트·도표·다이어그램 이미지와 docx / xlsx / pptx / pdf / csv 파일을 만들 수 있고, "
         "이미지·PDF·데이터 파일을 첨부할 수 있습니다."
@@ -89,7 +89,7 @@ with gr.Blocks(title="Jev + Claude") as demo:
 
 
 if __name__ == "__main__":
-    if not os.environ.get("TYPESAFE_API_KEY"):
-        print("경고: TYPESAFE_API_KEY가 없어 Jev 라우팅/검증 없이 Sonnet으로만 동작합니다.")
+    if not os.environ.get("GROQ_API_KEY"):
+        print("경고: GROQ_API_KEY가 없어 규칙 기반 라우팅으로 동작하고 답변 검증은 건너뜁니다.")
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     demo.queue().launch(share="--share" in sys.argv, allowed_paths=[OUTPUT_DIR])

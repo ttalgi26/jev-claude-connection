@@ -13,14 +13,14 @@
 import os
 import sys
 
-from jevqa.pipeline import Session, answer
+from claudeqa.pipeline import Session, answer
 
 VERBOSE = "-v" in sys.argv
 
 
 def main():
-    if not os.environ.get("TYPESAFE_API_KEY"):
-        print("경고: TYPESAFE_API_KEY가 없어 Jev 라우팅/검증 없이 Sonnet으로만 동작합니다.")
+    if not os.environ.get("GROQ_API_KEY"):
+        print("경고: GROQ_API_KEY가 없어 규칙 기반 라우팅으로 동작하고 답변 검증은 건너뜁니다.")
     session, pending = Session(), []
     print("질문을 입력하세요. (/new 새 대화, /attach 경로 파일 첨부, /quit 종료)")
     while True:

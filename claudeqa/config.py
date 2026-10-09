@@ -1,10 +1,10 @@
 import os
 
-# ───────────── Jev ─────────────
-JEV_URL = "https://api.typesafe.ai/v1/systemone"
-JEV_MODEL = "jev-latest"
-JEV_TIMEOUT = 5            # 초. Jev 실패 시 Sonnet으로 폴백
-JEV_MAX_CHARS = 20000      # Jev 컨텍스트 32K 제한 대비 자르기
+# ───────────── 판정 모델 (Groq 무료 API) ─────────────
+GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
+GROQ_MODEL = os.environ.get("GROQ_MODEL", "openai/gpt-oss-20b")
+JUDGE_TIMEOUT = 10         # 초. 실패 시 규칙 기반 판정으로 폴백
+JUDGE_MAX_CHARS = 12000    # 무료 티어 분당 토큰 한도 대비 답변 자르기
 
 # ───────────── 라우팅 기준 ─────────────
 ROUTE_CONF_MIN = 0.60      # 라우팅 신뢰도가 이보다 낮으면 한 단계 위 모델 사용
@@ -46,14 +46,14 @@ SYSTEM_PROMPT_CODE = (
 )
 
 # ───────────── 파일 ─────────────
-OUTPUT_DIR = os.path.abspath(os.environ.get("JEVQA_OUTPUT_DIR", "outputs"))
+OUTPUT_DIR = os.path.abspath(os.environ.get("CLAUDEQA_OUTPUT_DIR", "outputs"))
 IMAGE_TYPES = {
     ".png": "image/png", ".jpg": "image/jpeg", ".jpeg": "image/jpeg",
     ".gif": "image/gif", ".webp": "image/webp",
 }
 
 # ───────────── 캐시 ─────────────
-CACHE_DB = os.environ.get("JEVQA_CACHE_DB", "qa_cache.sqlite")
+CACHE_DB = os.environ.get("CLAUDEQA_CACHE_DB", "qa_cache.sqlite")
 CACHE_TTL = 7 * 24 * 3600  # 초. 오래된 캐시 답변은 무시
 
 HISTORY_MAX = 12           # 최근 6턴만 유지 → 입력 토큰 절감

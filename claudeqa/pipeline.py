@@ -1,10 +1,10 @@
 """
 흐름:
   1) 캐시 조회 (같은 질문 → API 호출 0회)
-  2) Jev 라우팅: 난이도 / 최신정보 / 정밀 계산 / 파일 생성 요청 여부  (1회 요청)
+  2) 판정(Groq) 라우팅: 난이도 / 최신정보 / 정밀 계산 / 파일 생성 요청 여부  (1회 요청)
   3) 난이도에 맞는 Claude 모델로 답변 (Haiku → Sonnet → Opus)
      파일·차트 요청이나 데이터 파일 첨부 시 코드 실행 도구 사용
-  4) Jev 검증: 답변이 질문에 충분히 답했는지
+  4) 판정(Groq) 검증: 답변이 질문에 충분히 답했는지
   5) 검증 미달·잘림·거절이면 한 단계 위 모델로 1회만 재시도
 """
 
@@ -15,7 +15,7 @@ from dataclasses import dataclass, field
 from . import cache
 from .claude import ask_claude, build_user_content, download_files
 from .config import HISTORY_MAX, TIERS, VERIFY_PASS_MIN
-from .jev import route, verify
+from .judge import route, verify
 
 
 @dataclass
@@ -69,7 +69,7 @@ def answer(question: str, session: Session, attachments: list | None = None) -> 
         session.container_id = r.container_id or session.container_id
         tok_in, tok_out = tok_in + r.tok_in, tok_out + r.tok_out
         text = r.text
-        # 잘림·거절은 Jev 검증 없이 미달로 처리
+        # 잘림·거절은 검증 없이 미달로 처리
         if r.stop in ("end_turn", "stop_sequence") and (text or r.file_ids):
             checked = text + (f"\n\n[generated files: {len(r.file_ids)}]" if r.file_ids else "")
             score = verify(question, checked, history, names)
@@ -90,7 +90,7 @@ def answer(question: str, session: Session, attachments: list | None = None) -> 
         "web": use_web, "code": use_code, "stop": r.stop, "verify": score,
         "tok_in": tok_in, "tok_out": tok_out, "secs": time.time() - t0,
     })
-    # 첫 질문 + 첨부·웹검색·파일생성 없음 + Jev 검증 실제 통과한 답변만 캐시
+    # 첫 질문 + 첨부·웹검색·파일생성 없음 + 검증 실제 통과한 답변만 캐시
     if (not history and not attachments and not use_web and not use_code
             and score is not None and score >= VERIFY_PASS_MIN):
         cache.cache_put(question, text)
