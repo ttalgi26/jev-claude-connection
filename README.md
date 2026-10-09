@@ -12,14 +12,30 @@
 ## 빠른 시작
 
 ```bash
-python -m venv .venv && source .venv/bin/activate
+python -m venv .venv
+source .venv/bin/activate        # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
-export ANTHROPIC_API_KEY=sk-ant-...
-export GROQ_API_KEY=gsk_...      # https://console.groq.com/keys 에서 무료 발급
+cp .env.example .env             # Windows: copy .env.example .env
+```
 
+`.env`를 열어 키를 넣습니다.
+
+```
+ANTHROPIC_API_KEY=sk-ant-...
+GROQ_API_KEY=gsk_...
+```
+
+| 키 | 발급처 | 비용 |
+|---|---|---|
+| `ANTHROPIC_API_KEY` | https://console.anthropic.com → Settings → API Keys | 유료 (크레딧 충전 필요) |
+| `GROQ_API_KEY` | https://console.groq.com/keys | 무료 (없으면 규칙 기반 판정으로 동작) |
+
+```bash
 python app.py          # 웹 UI → http://127.0.0.1:7860
 python cli.py -v       # 터미널
 ```
+
+`.env`는 `.gitignore`에 들어 있어 커밋되지 않습니다. 셸에서 `export`로 설정한 환경변수가 있으면 그 값이 `.env`보다 우선합니다.
 
 ## 웹 UI (`app.py`)
 
