@@ -11,6 +11,7 @@ import sys
 import gradio as gr
 
 from claudeqa.config import OUTPUT_DIR
+from claudeqa import env_report
 from claudeqa.pipeline import Session, answer
 
 ACCEPT = [
@@ -89,6 +90,7 @@ with gr.Blocks(title="Claude QA") as demo:
 
 
 if __name__ == "__main__":
+    print(env_report())
     if not os.environ.get("GROQ_API_KEY"):
         print("경고: GROQ_API_KEY가 없어 규칙 기반 라우팅으로 동작하고 답변 검증은 건너뜁니다.")
     os.makedirs(OUTPUT_DIR, exist_ok=True)

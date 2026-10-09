@@ -13,12 +13,14 @@
 import os
 import sys
 
+from claudeqa import env_report
 from claudeqa.pipeline import Session, answer
 
 VERBOSE = "-v" in sys.argv
 
 
 def main():
+    print(env_report())
     if not os.environ.get("GROQ_API_KEY"):
         print("경고: GROQ_API_KEY가 없어 규칙 기반 라우팅으로 동작하고 답변 검증은 건너뜁니다.")
     session, pending = Session(), []
